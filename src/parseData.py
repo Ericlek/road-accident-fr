@@ -64,7 +64,7 @@ def parseVehicules(year):
 
 
 if __name__ == "__main__":
-    res = parseLieux(2024)
+    res = parseCaract(2024)
     print(res)
 
     
