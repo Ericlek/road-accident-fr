@@ -42,9 +42,7 @@ def parseUsagers(year):
             if row != []:
                 row[1] = row[1].replace("\xa0", "")
                 row[2] = row[2].replace("\xa0", "")
-                print(row)
                 usagers[row[0]] = row[1:len(row)]
-            break
     return usagers
 
 def parseVehicules(year):
