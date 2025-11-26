@@ -9,9 +9,9 @@ def accidentByHour(caractData):
         hours += [int(data[3][:2])]
 
     plt.hist(hours, bins=24, edgecolor="black")
-    plt.xlabel("Heure de la journée")
-    plt.ylabel("Nombre d'accidents")
-    plt.title("Nombre d'accidents en fonction de l'heure")
+    plt.xlabel("Hour of the day")
+    plt.ylabel("Number of accidents")
+    plt.title("Number of accidents by hour")
     plt.show()
 
 # Not meaningful
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     usagersDict = parseData.parseUsagers(2024)
     severityByAtmos(caracDict, usagersDict)
     accidentByAtmos(caracDict)
-    # accidentByHour(caracDict)
+    accidentByHour(caracDict)
