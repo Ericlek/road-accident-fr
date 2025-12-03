@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import parseData
+import seaborn as sns
 
 def accidentByHour(caractData):
     hours = []
@@ -16,11 +17,23 @@ def accidentByHour(caractData):
 
 # Not meaningful
 def accidentByAtmos(caractData):
-    atmo = []
+    weather_counts = [0]*9  
+    weather_labels = ["Normal", "Light rain", "Heavy rain", "Snow", "Fog",
+                      "Heavy storm", "Dazzling light", "Cloudy", "Others"]
+
     for acc_id, data in caractData.items():
-        atmo += [int(data[9])]
-    atmo = [x for x in atmo if x != -1]
-    plt.hist(atmo, bins = 10)
+        weather = int(data[9]) - 1  
+        weather_counts[weather] += 1
+
+    total = sum(weather_counts)
+    weather_percent = [count / total * 100 for count in weather_counts]
+
+    plt.figure(figsize=(10,6))
+    plt.bar(weather_labels, weather_percent, color="blue")
+    plt.ylabel("Percentage of Accidents (%)")
+    plt.title("Percentage of Accidents by Weather")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.show()
 
 def severityByAtmos(caractData, usagersData):
@@ -56,7 +69,7 @@ def severityByAtmos(caractData, usagersData):
         title='Severity of accidents by weather conditions')
     plt.show()
 
-    df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100  # Convert to %
+    df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100 
     df_norm.plot(kind="bar", stacked=True, figsize=(10,6),
                  title="Severity of Accidents by Weather (Percentage)")
     plt.xlabel("Weather")
@@ -66,9 +79,30 @@ def severityByAtmos(caractData, usagersData):
     plt.tight_layout()
     plt.show()
 
+    df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100
+    df_deviation = df_norm - df_norm.mean(axis=0)
+
+
+    plt.figure(figsize=(10,6))
+    sns.heatmap(df_norm, annot=True, fmt=".1f", cmap="YlGnBu")
+    plt.title("Heatmap of Accident Severity by Weather (Percentage)")
+    plt.xlabel("Severity")
+    plt.ylabel("Weather")
+    plt.tight_layout()
+    plt.show()
+
+    plt.figure(figsize=(10,6))
+    sns.heatmap(df_deviation, annot=True, fmt=".1f", cmap="coolwarm", center=0)
+    plt.title("Deviation from Mean Percentage of Each Severity by Weather")
+    plt.xlabel("Severity")
+    plt.ylabel("Weather")
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
     caracDict = parseData.parseCaract(2024)
     usagersDict = parseData.parseUsagers(2024)
     severityByAtmos(caracDict, usagersDict)
-    # accidentByAtmos(caracDict)
+    accidentByAtmos(caracDict)
     # accidentByHour(caracDict)
