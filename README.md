@@ -9,4 +9,4 @@ the dataset
 - Data in Bordeaux : https://datahub.bordeaux-metropole.fr/explore/dataset/accidents-corporels-de-la-circulation-sur-bordeaux-metropole-2012-2019/information/?disjunctive.epci_code&disjunctive.com_code&disjunctive.reg_name&disjunctive.reg_code&disjunctive.epci_name&disjunctive.dep_name&disjunctive.dep_code&disjunctive.com_name
 
 # Getting started
-None for now
+Please download all necessary csv by launching dlData.py from the project root.
