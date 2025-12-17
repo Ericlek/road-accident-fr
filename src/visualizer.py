@@ -47,8 +47,11 @@ def severityByAtmos(caractData, usagersData):
                 4: [0 for _ in range(9)]}
 
 
+
     for acc_id, data in accidents.items():
-        plotData[int(data[1])][int(data[0]) - 1] += 1
+        print(acc_id)
+        if int(data[1]) != -1:
+            plotData[int(data[1])][int(data[0]) - 1] += 1
     
     df = pd.DataFrame({
         "Severity": ["Unharmed", "Light wounds", "Hospitalized", "Dead"],
@@ -101,8 +104,8 @@ def severityByAtmos(caractData, usagersData):
 
 
 if __name__ == "__main__":
-    caracDict = parseData.parseCaract(2024)
-    usagersDict = parseData.parseUsagers(2024)
+    caracDict = parseData.parseCaract(2022)
+    usagersDict = parseData.parseUsagers(2022)
     severityByAtmos(caracDict, usagersDict)
     accidentByAtmos(caracDict)
     # accidentByHour(caracDict)
