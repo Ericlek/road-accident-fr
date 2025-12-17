@@ -103,8 +103,9 @@ def severityByAtmos(caractData, usagersData):
 
 
 if __name__ == "__main__":
-    caracDict = parseData.parseMultipleYears((2021,2021), "caract")
-    usagersDict = parseData.parseMultipleYears((2021,2021), "usagers")
+    year_tuple = (2020,2024)
+    caracDict = parseData.parseMultipleYears(year_tuple, "caract")
+    usagersDict = parseData.parseMultipleYears(year_tuple, "usagers")
     severityByAtmos(caracDict, usagersDict)
     # accidentByAtmos(caracDict)
     # accidentByHour(caracDict)
