@@ -35,10 +35,28 @@ def download_csv(year, link):
 
     urlretrieve(url, destFolder + "/" + filename)
 
+def rename_caract_1():
+    years_to_fix = ["2020"]
+    for year in years_to_fix:
+        current = "./data/" + year + "/caracteristiques-" + year + ".csv"
+        new = "./data/" + year + "/caract-" + year + ".csv"
+        os.rename(current, new)
+
+def rename_caract_2():
+    years_to_fix = ["2021", "2022"]
+    for year in years_to_fix:
+        current = "./data/" + year + "/carcteristiques-" + year + ".csv"
+        new = "./data/" + year + "/caract-" + year + ".csv"
+        os.rename(current, new)
+
+
 def main():
     for year, links in yearLinks.items():
         for link in links:
             download_csv(year, link)
+    
+    rename_caract_1()
+    rename_caract_2()
     
 if __name__ == "__main__":
     main()
