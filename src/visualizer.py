@@ -49,7 +49,6 @@ def severityByAtmos(caractData, usagersData):
 
 
     for acc_id, data in accidents.items():
-        print(acc_id)
         if int(data[1]) != -1:
             plotData[int(data[1])][int(data[0]) - 1] += 1
     
@@ -104,8 +103,8 @@ def severityByAtmos(caractData, usagersData):
 
 
 if __name__ == "__main__":
-    caracDict = parseData.parseCaract(2022)
-    usagersDict = parseData.parseUsagers(2022)
+    caracDict = parseData.parseMultipleYears((2020,2024), "caract")
+    usagersDict = parseData.parseMultipleYears((2020,2024), "usagers")
     severityByAtmos(caracDict, usagersDict)
     accidentByAtmos(caracDict)
     # accidentByHour(caracDict)
