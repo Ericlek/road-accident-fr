@@ -42,7 +42,12 @@ def parseUsagers(year):
             if row != []:
                 row[1] = row[1].replace("\xa0", "")
                 row[2] = row[2].replace("\xa0", "")
-                usagers[row[0]] = row[1:len(row)]
+                if int(year) > 2020:
+                    usagers[row[0]] = row[1:len(row)]
+                else:
+                    row.insert(1, "")
+                    usagers[row[0]] = row[1:len(row)]
+            # break
     return usagers
 
 def parseVehicules(year):
@@ -77,8 +82,8 @@ def parseMultipleYears(years, type):
 
 
 if __name__ == "__main__":
-    # res = parseLieux(2024)
+    # res = parseUsagers(2020)
     # print(res)
-    res = parseMultipleYears((2020,2024), "caract")
+    res = parseMultipleYears((2020,2020), "usagers")
     print(res)
     
