@@ -62,9 +62,25 @@ def parseVehicules(year):
                 vehicules[row[0]] = row[1:len(row)]
     return vehicules
 
+def parseMultipleYears(years, type):
+    """
+    Year is a tuple with start year to end year included
+    """
+    start, end = years
+    yearsArray = [i for i in range(start, end+1)]
+
+    functions = {"caract": parseCaract, "lieux": parseLieux, "usagers": parseUsagers, "vehicules": parseVehicules}
+    dictRet = {}
+
+    for year in years:
+        dictRet = dictRet | functions[type](year)
+    
+    return dictRet
+
 
 if __name__ == "__main__":
-    res = parseLieux(2024)
+    # res = parseLieux(2024)
+    # print(res)
+    res = parseMultipleYears((2020,2024), "caract")
     print(res)
-
     
