@@ -4,18 +4,26 @@ import numpy as np
 import parseData
 import seaborn as sns
 
-def accidentByHour(caractData):
+def accidentByHour(caractData, show_res = True):
     hours = []
+    counts = [0] * 24
     for acc_id, data in caractData.items():
-        hours += [int(data[3][:2])]
+        h = int(data[3][:2])
+        hours += [h]
+        counts[h] += 1
 
-    plt.hist(hours, bins=24, edgecolor="black")
-    plt.xlabel("Hour of the day")
-    plt.ylabel("Number of accidents")
-    plt.title("Number of accidents by hour")
-    plt.show()
+    total_accidents = sum(counts)
+    hour_weights = {h: (counts[h] / total_accidents) for h in range(24)}
 
-# Not meaningful
+    if show_res:
+        plt.hist(hours, bins=24, edgecolor="black")
+        plt.xlabel("Hour of the day")
+        plt.ylabel("Number of accidents")
+        plt.title("Number of accidents by hour")
+        plt.show()
+    
+    return hour_weights
+
 def accidentByAtmos(caractData):
     weather_counts = [0]*9  
     weather_labels = ["Normal", "Light rain", "Heavy rain", "Snow", "Fog",
@@ -36,7 +44,7 @@ def accidentByAtmos(caractData):
     plt.tight_layout()
     plt.show()
 
-def severityByAtmos(caractData, usagersData):
+def severityByAtmos(caractData, usagersData, show_res = True):
     accidents = {}
     for acc_id, data in caractData.items():
         accidents[acc_id] = [data[9],usagersData[acc_id][5]] # Weather condition / Accident's severity
@@ -72,40 +80,43 @@ def severityByAtmos(caractData, usagersData):
     plt.show()
 
     df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100 
-    df_norm.plot(kind="bar", stacked=True, figsize=(10,6),
-                 title="Severity of Accidents by Weather (Percentage)")
-    plt.xlabel("Weather")
-    plt.ylabel("Percentage of Accidents")
-    plt.xticks(rotation=45)
-    plt.legend(title="Severity")
-    plt.tight_layout()
-    plt.show()
+    if show_res:
+        df_norm.plot(kind="bar", stacked=True, figsize=(10,6),
+                    title="Severity of Accidents by Weather (Percentage)")
+        plt.xlabel("Weather")
+        plt.ylabel("Percentage of Accidents")
+        plt.xticks(rotation=45)
+        plt.legend(title="Severity")
+        plt.tight_layout()
+        plt.show()
 
     df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100
     df_deviation = df_norm - df_norm.mean(axis=0)
 
+    if show_res:
+        plt.figure(figsize=(10,6))
+        sns.heatmap(df_norm, annot=True, fmt=".1f", cmap="YlGnBu")
+        plt.title("Heatmap of Accident Severity by Weather (Percentage)")
+        plt.xlabel("Severity")
+        plt.ylabel("Weather")
+        plt.tight_layout()
+        plt.show()
 
-    plt.figure(figsize=(10,6))
-    sns.heatmap(df_norm, annot=True, fmt=".1f", cmap="YlGnBu")
-    plt.title("Heatmap of Accident Severity by Weather (Percentage)")
-    plt.xlabel("Severity")
-    plt.ylabel("Weather")
-    plt.tight_layout()
-    plt.show()
+        plt.figure(figsize=(10,6))
+        sns.heatmap(df_deviation, annot=True, fmt=".1f", cmap="coolwarm", center=0)
+        plt.title("Deviation from Mean Percentage of Each Severity by Weather")
+        plt.xlabel("Severity")
+        plt.ylabel("Weather")
+        plt.tight_layout()
+        plt.show()
 
-    plt.figure(figsize=(10,6))
-    sns.heatmap(df_deviation, annot=True, fmt=".1f", cmap="coolwarm", center=0)
-    plt.title("Deviation from Mean Percentage of Each Severity by Weather")
-    plt.xlabel("Severity")
-    plt.ylabel("Weather")
-    plt.tight_layout()
-    plt.show()
+    return df_deviation.to_dict(orient="index")
 
 
 if __name__ == "__main__":
     year_tuple = (2020,2024)
     caracDict = parseData.parseMultipleYears(year_tuple, "caract")
     usagersDict = parseData.parseMultipleYears(year_tuple, "usagers")
-    severityByAtmos(caracDict, usagersDict)
+    # severityByAtmos(caracDict, usagersDict)
     # accidentByAtmos(caracDict)
-    # accidentByHour(caracDict)
+    accidentByHour(caracDict)
