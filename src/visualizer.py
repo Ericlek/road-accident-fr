@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import parseData
 import seaborn as sns
+from datetime import datetime
 
 def accidentByHour(caractData, show_res = True):
     hours = []
@@ -75,9 +76,10 @@ def severityByAtmos(caractData, usagersData, show_res = True):
     
     df_t = df.set_index("Severity").T
 
-    df_t.plot(kind='bar', stacked=True,
-        title='Severity of accidents by weather conditions')
-    plt.show()
+    if show_res:
+        df_t.plot(kind='bar', stacked=True,
+            title='Severity of accidents by weather conditions')
+        plt.show()
 
     df_norm = df_t.div(df_t.sum(axis=1), axis=0) * 100 
     if show_res:
@@ -112,6 +114,31 @@ def severityByAtmos(caractData, usagersData, show_res = True):
 
     return df_deviation.to_dict(orient="index")
 
+def accidentByDay(caractData, show_res = True):
+    accidents_in_day = {}
+    for acc_id, data in caractData.items():
+        day = data[0] + "/" + data[1] + "/" + data[2]
+        if day not in accidents_in_day:
+            accidents_in_day[day] = 1
+        else:
+            accidents_in_day[day] += 1
+
+    if show_res:
+        sorted_keys = sorted(accidents_in_day.keys(), key=lambda x: datetime.strptime(x, "%d/%m/%Y"))
+        counts = [accidents_in_day[k] for k in sorted_keys]
+
+        plt.figure(figsize=(14, 6))
+        plt.bar(sorted_keys, counts, color='teal', edgecolor='black')
+        plt.title('Daily Car Accidents (Gap-Corrected)', fontsize=14)
+        plt.xlabel('Date', fontsize=12)
+        plt.ylabel('Number of Accidents', fontsize=12)
+        plt.xticks(rotation=45)
+        plt.grid(axis='y', linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.show()
+
+    return accidents_in_day
+
 
 if __name__ == "__main__":
     year_tuple = (2020,2024)
@@ -119,4 +146,7 @@ if __name__ == "__main__":
     usagersDict = parseData.parseMultipleYears(year_tuple, "usagers")
     # severityByAtmos(caracDict, usagersDict)
     # accidentByAtmos(caracDict)
-    accidentByHour(caracDict)
+    # accidentByHour(caracDict)
+    # print(severityByAtmos(caracDict, usagersDict, False))
+    # print(accidentByHour(caracDict, True))
+    print(accidentByDay(caracDict))
