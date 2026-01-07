@@ -75,7 +75,7 @@ def parseMultipleYears(years, type):
     functions = {"caract": parseCaract, "lieux": parseLieux, "usagers": parseUsagers, "vehicules": parseVehicules}
     dictRet = {}
 
-    for year in years:
+    for year in yearsArray:
         dictRet = dictRet | functions[type](year)
     
     return dictRet
@@ -84,6 +84,6 @@ def parseMultipleYears(years, type):
 if __name__ == "__main__":
     # res = parseUsagers(2020)
     # print(res)
-    res = parseMultipleYears((2020,2020), "usagers")
+    res = parseMultipleYears((2020,2024), "caract")
     print(res)
     
