@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import parseData
 import seaborn as sns
-from datetime import datetime
+import matplotlib.dates as mdates
+from datetime import datetime, timedelta
 
 def accidentByHour(caractData, show_res = True):
     hours = []
@@ -139,6 +140,53 @@ def accidentByDay(caractData, show_res = True):
 
     return accidents_in_day
 
+def plotAccidentsByYearStacked(caractData):
+    yearly_groups = {}
+    for acc_id, data in caractData.items():
+        year = str(data[2])
+        day_str = f"{str(data[0]).zfill(2)}/{str(data[1]).zfill(2)}/{year}"
+        
+        if year not in yearly_groups:
+            yearly_groups[year] = {}
+        yearly_groups[year][day_str] = yearly_groups[year].get(day_str, 0) + 1
+
+    sorted_years = sorted(yearly_groups.keys())
+    num_years = len(sorted_years)
+
+    fig, axes = plt.subplots(nrows=num_years, ncols=1, figsize=(14, 3 * num_years), sharex=False)
+    
+    if num_years == 1:
+        axes = [axes]
+
+    for i, year in enumerate(sorted_years):
+        ax = axes[i]
+        year_dict = yearly_groups[year]
+        
+        start_date = datetime(int(year), 1, 1)
+        end_date = datetime(int(year), 12, 31)
+        
+        plot_dates = []
+        plot_counts = []
+        
+        curr = start_date
+        while curr <= end_date:
+            d_str = curr.strftime("%d/%m/%Y")
+            plot_dates.append(curr)
+            plot_counts.append(year_dict.get(d_str, 0))
+            curr += timedelta(days=1)
+
+        ax.plot(plot_dates, plot_counts, color='#2c7fb8', linewidth=1.2)
+        ax.fill_between(plot_dates, plot_counts, color='#2c7fb8', alpha=0.1)
+        
+        ax.set_title(f"Year: {year}", loc='left', fontweight='bold', fontsize=12)
+        ax.set_ylabel("Accidents")
+        ax.grid(True, linestyle='--', alpha=0.5)
+        
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     year_tuple = (2020,2024)
@@ -149,4 +197,5 @@ if __name__ == "__main__":
     # accidentByHour(caracDict)
     # print(severityByAtmos(caracDict, usagersDict, False))
     # print(accidentByHour(caracDict, True))
-    print(accidentByDay(caracDict))
+    # print(accidentByDay(caracDict))
+    print(plotAccidentsByYearStacked(caracDict))
