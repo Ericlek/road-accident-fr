@@ -1,5 +1,6 @@
 import os
 import csv
+import copy
 
 def parseCaract(year):
     caracts = {}
@@ -80,10 +81,18 @@ def parseMultipleYears(years, type):
     
     return dictRet
 
+def parseParisData(parsedData):
+    r = copy.deepcopy(parsedData)
+    for id_acc, data in parsedData.items():
+        if not data[5] == '75':
+            del r[id_acc]
+    return r
 
 if __name__ == "__main__":
     # res = parseUsagers(2020)
     # print(res)
     res = parseMultipleYears((2020,2024), "caract")
-    print(res)
+    paris = parseParisData(res)
+    # print(res)
+    print(paris)
     
