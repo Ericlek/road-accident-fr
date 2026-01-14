@@ -69,12 +69,12 @@ def getWeatherData():
     
 
 def main():
-    # for year, links in yearLinks.items():
-    #     for link in links:
-    #         download_csv(year, link)
+    for year, links in yearLinks.items():
+        for link in links:
+            download_csv(year, link)
     
-    # rename_caract_1()
-    # rename_caract_2()
+    rename_caract_1()
+    rename_caract_2()
     getWeatherData()
     
 if __name__ == "__main__":
