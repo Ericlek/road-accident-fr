@@ -1,5 +1,7 @@
 import os
 from urllib.request import urlopen, urlretrieve
+import gzip
+import shutil
 
 yearLinks = {2024 : ["20251107-100210/2024.csv", "20251021-115900/caract-2024.csv", "20251021-115812/lieux-2024.csv", "20251021-115506/usagers-2024.csv"],
              2023 : ["20241023-153219/lieux-2023.csv", "20241028-103125/caract-2023.csv", "20241023-153253/vehicules-2023.csv", "20241023-153328/usagers-2023.csv"],
@@ -50,13 +52,30 @@ def rename_caract_2():
         os.rename(current, new)
 
 
-def main():
-    for year, links in yearLinks.items():
-        for link in links:
-            download_csv(year, link)
+def getWeatherData():
+    urlWeather = "https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/HOR/H_75_previous-2020-2024.csv.gz"
+    dir = os.path.dirname(__file__)
+    filename = urlWeather.split("/")[-1]
+    finalefile = filename[:-3]
+    destFolder = os.path.normpath(os.path.join(dir, 'data'))
+
+    if not os.path.exists(destFolder):
+        os.makedirs(destFolder)
     
-    rename_caract_1()
-    rename_caract_2()
+    urlretrieve(urlWeather, destFolder + "/" + filename)
+    with gzip.open("./data/" + filename, 'rb') as f_in:
+        with open("./data/" + finalefile, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    
+
+def main():
+    # for year, links in yearLinks.items():
+    #     for link in links:
+    #         download_csv(year, link)
+    
+    # rename_caract_1()
+    # rename_caract_2()
+    getWeatherData()
     
 if __name__ == "__main__":
     main()
